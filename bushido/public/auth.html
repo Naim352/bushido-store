@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --gold:#c9a24a;
+    --gold-dim:#8a7237;
+    --bg:#0e0d0b;
+    --panel:#17140f;
+    --panel-2:#1d1912;
+    --line:#2a2419;
+    --text:#f1ead9;
+    --muted:#a89b7d;
+    --danger:#d16a5a;
+    --ok:#7fae6f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:radial-gradient(circle at 50% 0%, #1a1610 0%, var(--bg) 60%);
+    font-family:'Georgia', 'Times New Roman', serif;
+    color:var(--text);
+    padding:24px;
+  }
+  .wrap{width:100%;max-width:400px;}
+  .brand{
+    text-align:center;
+    margin-bottom:22px;
+    letter-spacing:3px;
+    font-size:13px;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:38px 32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .fb{display:none;}
+  .fb.on{display:block;}
+  h1.ft{
+    font-size:22px;
+    font-weight:400;
+    margin:0 0 6px;
+    color:var(--text);
+  }
+  p.fs{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 26px;
+    line-height:1.5;
+  }
+  .fg{margin-bottom:18px;}
+  .fl{
+    display:block;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .fi{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:12px 14px;
+    font-size:14px;
+    font-family:inherit;
+    border-radius:1px;
+    outline:none;
+    transition:border-color .2s;
+  }
+  .fi:focus{border-color:var(--gold-dim);}
+  .fi::placeholder{color:#4d452f;}
+  .fiw{position:relative;}
+  .fiw .fi{padding-right:42px;}
+  .fii{
+    position:absolute;
+    right:12px; top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    opacity:.6;
+    font-size:15px;
+    user-select:none;
+  }
+  .fii:hover{opacity:1;}
+  .btn-sub{
+    width:100%;
+    background:var(--gold);
+    color:#171308;
+    border:none;
+    padding:13px;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-family:inherit;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:1px;
+    transition:background .2s, transform .1s;
+  }
+  .btn-sub:hover{background:#ddb75e;}
+  .btn-sub:active{transform:scale(.99);}
+  .btn-sub:disabled{background:#4d452f;color:#8a8266;cursor:not-allowed;}
+  .btn-ghost{
+    width:100%;
+    background:transparent;
+    color:var(--gold);
+    border:1px solid var(--gold-dim);
+    padding:12px;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-family:inherit;
+    cursor:pointer;
+    border-radius:1px;
+    transition:border-color .2s, background .2s;
+  }
+  .btn-ghost:hover{background:rgba(201,162,74,.08);border-color:var(--gold);}
+  .fdiv{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:22px 0;
+    color:var(--muted);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .fdiv::before,.fdiv::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .srow{display:flex;flex-direction:column;gap:10px;}
+  .gsi-holder{display:flex;justify-content:center;}
+  .btn-apple{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:#000;color:#fff;
+    border:1px solid #2a2a2a;
+    padding:11px;font-size:13px;text-decoration:none;
+    border-radius:4px;
+  }
+  .swl{
+    text-align:center;
+    font-size:13px;
+    color:var(--muted);
+    margin-top:24px;
+  }
+  .swl a{color:var(--gold);text-decoration:none;cursor:pointer;}
+  .swl a:hover{text-decoration:underline;}
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--muted);
+    text-decoration:none;
+    cursor:pointer;
+    margin-bottom:22px;
+  }
+  .back-link:hover{color:var(--gold);}
+  .msg{
+    font-size:13px;
+    padding:11px 14px;
+    border-radius:1px;
+    margin-bottom:18px;
+    display:none;
+    line-height:1.5;
+  }
+  .msg.show{display:block;}
+  .msg.ok{background:rgba(127,174,111,.1);border:1px solid rgba(127,174,111,.35);color:var(--ok);}
+  .msg.err{background:rgba(209,106,90,.1);border:1px solid rgba(209,106,90,.35);color:var(--danger);}
+  .fp-icon{
+    width:44px;height:44px;
+    border:1px solid var(--gold-dim);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+    font-size:18px;
+    color:var(--gold);
+  }
+  .confirm-email{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Maison Privée</div>
+  <div class="card">
+
+    <!-- ===== CONNEXION ===== -->
+    <div class="fb on" id="form-login">
+      <h1 class="ft">Bon retour</h1>
+      <p class="fs">Connectez-vous pour accéder à votre espace.</p>
+      <div class="msg" id="login-msg"></div>
+
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="login-email" placeholder="votre@email.com"></div>
+      <div class="fg"><label class="fl">Mot de passe</label><div class="fiw"><input class="fi" type="password" placeholder="••••••••" id="lp"><span class="fii" onclick="tp('lp')">👁</span></div></div>
+
+      <div style="text-align:right;margin-bottom:18px"><a onclick="switchTab('forgot')" style="font-size:12px;color:var(--gold);cursor:pointer;text-decoration:none">Mot de passe oublié ?</a></div>
+      <button class="btn-sub" onclick="loginUser()">Se connecter</button>
+
+      <div class="fdiv"><span>ou continuer avec</span></div>
+      <div class="srow">
+        <div class="gsi-holder">
+          <div id="g_id_signin"></div>
+        </div>
+        <a class="btn-apple" href="https://appleid.apple.com" target="_blank"> Apple</a>
+      </div>
+
+      <div class="swl">Pas encore de compte ? <a onclick="switchTab('register')">Créer un compte →</a></div>
+    </div>
+
+    <!-- ===== MOT DE PASSE OUBLIÉ ===== -->
+    <div class="fb" id="form-forgot">
+      <a class="back-link" onclick="switchTab('login')">← Retour à la connexion</a>
+      <div class="fp-icon">🔑</div>
+      <h1 class="ft" style="text-align:center">Mot de passe oublié</h1>
+      <p class="fs" style="text-align:center">Indiquez votre email, nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
+
+      <div class="msg" id="forgot-msg"></div>
+
+      <div id="forgot-step-form">
+        <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="forgot-email" placeholder="votre@email.com"></div>
+        <button class="btn-sub" id="forgot-btn" onclick="sendResetLink()">Envoyer le lien</button>
+      </div>
+
+      <div id="forgot-step-sent" style="display:none;text-align:center">
+        <p class="fs">Un email a été envoyé à <span class="confirm-email" id="sent-email-display"></span>.<br>Vérifiez votre boîte de réception (et vos spams).</p>
+        <button class="btn-ghost" onclick="sendResetLink(true)">Renvoyer l'email</button>
+      </div>
+
+      <div class="swl">Pas de compte ? <a onclick="switchTab('register')">Créer un compte →</a></div>
+    </div>
+
+    <!-- ===== INSCRIPTION (placeholder minimal pour que switchTab fonctionne) ===== -->
+    <div class="fb" id="form-register">
+      <a class="back-link" onclick="switchTab('login')">← Retour à la connexion</a>
+      <h1 class="ft">Créer un compte</h1>
+      <p class="fs">Rejoignez-nous en quelques secondes.</p>
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="votre@email.com"></div>
+      <div class="fg"><label class="fl">Mot de passe</label><input class="fi" type="password" placeholder="••••••••"></div>
+      <button class="btn-sub">Créer mon compte</button>
+      <div class="swl">Déjà un compte ? <a onclick="switchTab('login')">Se connecter →</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ---- Navigation entre les formulaires ----
+  function switchTab(name){
+    document.querySelectorAll('.fb').forEach(el => el.classList.remove('on'));
+    document.getElementById('form-' + name).classList.add('on');
+  }
+
+  // ---- Afficher / masquer mot de passe ----
+  function tp(id){
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+  }
+
+  function showMsg(id, text, type){
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'msg show ' + type;
+  }
+
+  // ---- Connexion classique (email / mot de passe) ----
+  // À brancher sur votre backend réel (fetch vers votre API d'authentification).
+  function loginUser(){
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('lp').value;
+    if(!email || !pass){
+      showMsg('login-msg', 'Veuillez renseigner votre email et votre mot de passe.', 'err');
+      return;
+    }
+    // Exemple d'appel réel à remplacer par votre endpoint :
+    // fetch('/api/login', {method:'POST', body: JSON.stringify({email, pass}), headers:{'Content-Type':'application/json'}})
+    showMsg('login-msg', 'Connexion en cours...', 'ok');
+  }
+
+  // ---- Mot de passe oublié ----
+  // À brancher sur votre backend réel : un endpoint qui génère un token
+  // à durée limitée et envoie un email contenant un lien du type
+  // https://votre-site.com/reset-password?token=XXXX
+  function sendResetLink(isResend){
+    const emailInput = document.getElementById('forgot-email');
+    const email = emailInput.value.trim();
+    const btn = document.getElementById('forgot-btn');
+
+    if(!isResend){
+      if(!email || !email.includes('@')){
+        showMsg('forgot-msg', 'Veuillez entrer une adresse email valide.', 'err');
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+
+    // Exemple d'appel réel à remplacer par votre endpoint :
+    // fetch('/api/forgot-password', {method:'POST', body: JSON.stringify({email}), headers:{'Content-Type':'application/json'}})
+    //   .then(r => r.json())
+    //   .then(() => { ... })
+
+    setTimeout(() => {
+      document.getElementById('forgot-step-form').style.display = isResend ? 'none' : 'none';
+      document.getElementById('forgot-step-sent').style.display = 'block';
+      document.getElementById('sent-email-display').textContent = email || emailInput.value;
+      btn.disabled = false;
+      btn.textContent = 'Envoyer le lien';
+    }, 700);
+  }
+
+  // ---- Connexion Google réelle (Google Identity Services) ----
+  // Remplacez YOUR_GOOGLE_CLIENT_ID par le Client ID obtenu sur
+  // https://console.cloud.google.com/apis/credentials (type "ID client OAuth")
+  // et ajoutez l'origine exacte de votre site dans "Origines JavaScript autorisées".
+  window.onload = function () {
+    if (window.google && google.accounts && google.accounts.id) {
+      google.accounts.id.initialize({
+        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+        callback: handleGoogleCredential
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("g_id_signin"),
+        { theme: "filled_black", size: "large", width: 300, text: "continue_with", locale: "fr" }
+      );
+    }
+  };
+
+  function handleGoogleCredential(response){
+    // response.credential est un JWT signé par Google contenant l'identité
+    // réelle de l'utilisateur (email, nom, photo). Il doit être vérifié côté
+    // serveur avant de créer une session :
+    //
+    // fetch('/api/auth/google', {
+    //   method: 'POST',
+    //   headers: {'Content-Type':'application/json'},
+    //   body: JSON.stringify({ credential: response.credential })
+    // });
+    //
+    // Côté serveur : vérifier le token avec la librairie Google
+    // (google-auth-library) avant de faire confiance à son contenu.
+    const payload = parseJwt(response.credential);
+    showMsg('login-msg', 'Connecté avec Google : ' + payload.email, 'ok');
+  }
+
+  function parseJwt(token){
+    try{
+      return JSON.parse(atob(token.split('.')[1]));
+    }catch(e){
+      return {};
+    }
+  }
+</script>
+</body>
+</html>
